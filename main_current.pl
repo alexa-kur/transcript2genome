@@ -49,8 +49,8 @@ my $chain;
 my @plus_lines;
 my @minus_lines;
 my $i;
-my previous_start = 0;
-my previous_end = 0;
+my $previous_start = 0;
+my $previous_end = 0;
 
 #Print header to the SAM file
 print	'@HD	VN:1.0	SO:coordinate
@@ -242,7 +242,6 @@ foreach my $line (@minus_lines){
                     }
                 else {}
                 #print "$1 $pos $end $read_length $tam_line\n";
-                $tam_line =~s/$read(\s+)\S+/$rev_read\t$qual/;
 
         }
         $previous_start = $start;#callback to create correct junctions
