@@ -25,7 +25,11 @@ samtools index output_sorted.bam
 
 you can write script as the example.sh that is also in repo
 
+DEPENDENCIES
 
+samtools
+libbio-perl-samtools
+perl :)
 
 
 
