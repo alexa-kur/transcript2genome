@@ -1,0 +1,31 @@
+At this moment here are two files:
+1) valid_gtf.pl
+2) main_current.pl
+3) example.sh
+
+
+VALID_GTF.PL
+validation of gtf is neeeded when our transcript names differin BAM and gtf.
+At now 'valid_gtf.pl' takes standard GoldenPath RefGene.txt and creates file
+for Bowtie.
+
+MAIN_CURRENT.PL
+Usage of main_current.pl is described in it's help. Try '-h' or '--help'.
+
+
+NOTES
+You have to keep in mind that fact that output of 'main_current.pl' now is
+in SAM format, so after it's job have be done, you need to create BAM, sort it
+and then make index file. for samtools, it will be as:
+
+samtools view -bS output.sam > output.bam
+samtools sort output.bam output_sorted
+samtools index output_sorted.bam
+
+
+you can write script as the example.sh that is also in repo
+
+
+
+
+
