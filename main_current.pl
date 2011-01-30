@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-#new words
+
 use strict;
 use utf8;
 use Getopt::Long;
