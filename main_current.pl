@@ -80,11 +80,10 @@ print	'@HD	VN:1.0	SO:coordinate
 @SQ	SN:chrX	LN:155270560
 @SQ	SN:chrY	LN:59373566
 ';
-while (my $line = <$gtf>){if ($i =~ /^chr\S+\s+\S+\s+exon.*\+/){push (@plus_lines, $line)}
-                 elsif ($i =~ /^chr\S+\s+\S+\s+exon.*\-/){unshift (@minus_lines, $line)}
+while (my $line = <$gtf>){if ($line =~ /^chr\S+\s+\S+\s+exon.*\+/){push (@plus_lines, $line)}
+                 elsif ($line =~ /^chr\S+\s+\S+\s+exon.*\-/){unshift (@minus_lines, $line)}
                  else {}
 }
-
 foreach my $line (@plus_lines){
         $line =~/^(chr\S{1,2})\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S)\t(\S)\t(\S+)\s\"(\S+)\";\s\S+\s\"(\S+)\";$/;
         #chr = $1; 
@@ -150,7 +149,7 @@ foreach my $line (@plus_lines){
                 elsif ($position + $read_length < $end && $position < $start) {
                     $position = $previous_end - $local_start + $pos + 1;
 
-                    my $insert = $start - $previous_end;
+                    my $insert = $start - $previous_end - 1;
                     my $before_ins = $previous_end - $position + 1;
                     my $after_ins = $read_length - $before_ins;
                     $cigar = $before_ins."M".$insert."N".$after_ins."M";
@@ -217,8 +216,8 @@ foreach my $line (@minus_lines){
                 my $rev_qual = join('',reverse(split('',$qual)));
 
                 my $read_length = length ($seq);
-                my $position = $end - $pos + $local_start - $read_length + 1;
-                
+                my $position = $end  + 1 - ($pos +$read_length - $local_start);
+                $flag = 16; 
                 
                 if ($position + $read_length < $end && $position > $start) {
                     print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$rev_qual,@tags);
@@ -226,13 +225,10 @@ foreach my $line (@minus_lines){
                     }
                 
                 elsif ($position + $read_length > $end && $position > $start) {
-                    $position = $previous_start - $local_end + $pos + 1;
 
                     my $insert = $previous_start - $end;
-                   # my $before_ins = $previous_start - $position + 1;
-                   my $before_ins = $end - $local_start + $pos;
-                   # my $after_ins = $read_length - $before_ins;
-                   my $after_ins = $previous_start + $pos;
+                   my $before_ins = $end -  $position;
+                   my $after_ins = $read_length - $before_ins;
 
 
 
