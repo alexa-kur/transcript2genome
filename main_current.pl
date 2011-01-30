@@ -85,168 +85,154 @@ while (my $line = <$gtf>){if ($line =~ /^chr\S+\s+\S+\s+exon.*\+/){push (@plus_l
                  else {}
 }
 foreach my $line (@plus_lines){
-        $line =~/^(chr\S{1,2})\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S)\t(\S)\t(\S+)\s\"(\S+)\";\s\S+\s\"(\S+)\";$/;
-        #chr = $1; 
-        #source = $2; 
-        #type = $3; 
-        #start = $4; 
-        #end = $5;
-        #chain = $7;
-        #CDS = $8;
-        #gene = $10;
-        #code = $11;
+    $line =~/^(chr\S{1,2})\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S)\t(\S)\t(\S+)\s\"(\S+)\";\s\S+\s\"(\S+)\";$/;
 
-        #base parameters
-        $chr = $1;
-        $start = $4;
-        $end = $5;
-        $chain = $7;
+    #base parameters
+    $chr = $1;
+    $start = $4;
+    $end = $5;
+    $chain = $7;
 
-        #if not first exon
-        if ($code eq $11){       #local alignment parameters
-            $local_start = $sum_length + 1;
-            $sum_length = $end - $start + $sum_length + 1;
-            $local_end = $sum_length;
-        }
-        
-        else {
-            $code = $11;     #if the first exon
-            $sum_length = $end - $start + 1;
-            $local_start = 1;
-            $local_end = $sum_length;
-        }
+    #if not first exon
+    if ($code eq $11){       #local alignment parameters
+        $local_start = $sum_length + 1;
+        $sum_length = $end - $start + $sum_length + 1;
+        $local_end = $sum_length;
+    }
+    
+    else {
+        $code = $11;     #if the first exon
+        $sum_length = $end - $start + 1;
+        $local_start = 1;
+        $local_end = $sum_length;
+    }
 
-            #iterator per BAM file
-            $iterator = $inbam->features(-seq_id => $code, 
-                                           -start => $local_start,
-                                           -end => $local_end,
-                                           -iterator => 1);
-            while ($bam_line = $iterator->next_seq) {
-                
-                #base functional
-                my ($qname,
-                    $flag, 
-                    $rname, 
-                    $pos, 
-                    $mapq,
-                    $cigar,
-                    $mrnm,
-                    $mpos,
-                    $isize,
-                    $seq,
-                    $qual,
-                    @tags) = split "\t", $bam_line->tam_line;
-                
-                my $position = $pos - $local_start + $start;
-                my $read_length = length ($seq);
-                
-                
-                if ($position + $read_length < $end && $position > $start) {
-                    print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
-                    print "\n";
-                    }
-                
-                elsif ($position + $read_length < $end && $position < $start) {
-                    $position = $previous_end - $local_start + $pos + 1;
+        #iterator per BAM file
+        $iterator = $inbam->features(-seq_id => $code, 
+                                       -start => $local_start,
+                                       -end => $local_end,
+                                       -iterator => 1);
+        while ($bam_line = $iterator->next_seq) {
+            
+            #parse SAM string
+            my ($qname,
+                $flag, 
+                $rname, 
+                $pos, 
+                $mapq,
+                $cigar,
+                $mrnm,
+                $mpos,
+                $isize,
+                $seq,
+                $qual,
+                @tags) = split "\t", $bam_line->tam_line;
+            
+            
+            my $position = $pos - $local_start + $start;   #start position in genome
+            my $read_length = length ($seq);
+            
+           #finding junctions and giving output 
+            if ($position + $read_length < $end && $position > $start) {
+                print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
+                print "\n";
+                }
+            
+            elsif ($position + $read_length < $end && $position < $start) {
+                $position = $previous_end - $local_start + $pos + 1;
 
-                    my $insert = $start - $previous_end - 1;
-                    my $before_ins = $previous_end - $position + 1;
-                    my $after_ins = $read_length - $before_ins;
-                    $cigar = $before_ins."M".$insert."N".$after_ins."M";
-                    print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
-                    print "\n";
-                    }
-                else {}
+                my $insert = $start - $previous_end - 1;
+                my $before_ins = $previous_end - $position + 1;
+                my $after_ins = $read_length - $before_ins;
+                $cigar = $before_ins."M".$insert."N".$after_ins."M";
+
+                print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
+                print "\n";
+                }
+            else {}
 
 
-          } 
+    } 
 
-                $previous_end = $end;  #this is callback to save previous end position
-                
-            }
-
-
-#print @minus_lines;
-foreach my $line (@minus_lines){
-
-        $line =~/^(chr\S{1,2})\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S)\t(\S)\t(\S+)\s\"(\S+)\";\s\S+\s\"(\S+)\";$/;
-        #base parameters
-        $chr = $1;
-        $start = $4;
-        $end = $5;
-        $chain = $7;
-
-        if ($code eq $11) {
-
-            $local_start = $sum_length + 1;
-            $sum_length = $end - $start + $sum_length + 1;
-            $local_end = $sum_length;
-        }
-        #if the first exon
-        else {
-            $code = $11;
-            $sum_length = $end - $start + 1;
-            $local_start = 1;
-            $local_end = $sum_length;
-        }
-
-            #iterator per BAM file
-            $iterator = $inbam->features(-seq_id => $code, 
-                                           -start => $local_start,
-                                           -end => $local_end,
-                                           -iterator => 1);
-
-            while ($bam_line = $iterator->next_seq) {
-                
-                my ($qname,
-                    $flag, 
-                    $rname, 
-                    $pos, 
-                    $mapq,
-                    $cigar,
-                    $mrnm,
-                    $mpos,
-                    $isize,
-                    $seq,
-                    $qual,
-                    @tags) = split "\t", $bam_line->tam_line;
-                #base functional
-
-                my $rev_seq = reverse_read($seq);
-                my $rev_qual = join('',reverse(split('',$qual)));
-
-                my $read_length = length ($seq);
-                my $position = $end  + 1 - ($pos +$read_length - $local_start);
-                $flag = 16; 
-                
-                if ($position + $read_length < $end && $position > $start) {
-                    print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$rev_qual,@tags);
-                    print "\n";
-                    }
-                
-                elsif ($position + $read_length > $end && $position > $start) {
-
-                    my $insert = $previous_start - $end;
-                   my $before_ins = $end -  $position;
-                   my $after_ins = $read_length - $before_ins;
-
-
-
-                    $cigar = $before_ins."M".$insert."N".$after_ins."M";
-                    print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
-                    print "\n";
-                    }
-                else {}
-                #print "$1 $pos $end $read_length $tam_line\n";
-
-        }
-        $previous_start = $start;#callback to create correct junctions
+            $previous_end = $end;  #callback to save previous end position
+            
 }
 
 
+foreach my $line (@minus_lines){
 
-#остались только проблемы с джанками
+    $line =~/^(chr\S{1,2})\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S+)\t(\S)\t(\S)\t(\S+)\s\"(\S+)\";\s\S+\s\"(\S+)\";$/;
+
+    $chr = $1;
+    $start = $4;
+    $end = $5;
+    $chain = $7;
+
+    if ($code eq $11) {
+
+        $local_start = $sum_length + 1;
+        $sum_length = $end - $start + $sum_length + 1;
+        $local_end = $sum_length;
+    }
+    #if the first exon
+    else {
+        $code = $11;
+        $sum_length = $end - $start + 1;
+        $local_start = 1;
+        $local_end = $sum_length;
+    }
+
+        #iterator per BAM file
+        $iterator = $inbam->features(-seq_id => $code, 
+                                       -start => $local_start,
+                                       -end => $local_end,
+                                       -iterator => 1);
+
+        while ($bam_line = $iterator->next_seq) {
+            
+            my ($qname,
+                $flag, 
+                $rname, 
+                $pos, 
+                $mapq,
+                $cigar,
+                $mrnm,
+                $mpos,
+                $isize,
+                $seq,
+                $qual,
+                @tags) = split "\t", $bam_line->tam_line;
+
+            my $rev_seq = reverse_read($seq);
+            my $rev_qual = join('',reverse(split('',$qual)));
+
+            my $read_length = length ($seq);
+            my $position = $end  + 1 - ($pos +$read_length - $local_start);
+
+            $flag = 16; 
+            
+            if ($position + $read_length < $end && $position > $start) {
+                print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$rev_qual,@tags);
+                print "\n";
+                }
+            
+            elsif ($position + $read_length > $end && $position > $start) {
+
+                my $insert = $previous_start - $end - 1;
+                my $before_ins = $end -  $position + 1;
+                my $after_ins = $read_length - $before_ins;
+                $cigar = $before_ins."M".$insert."N".$after_ins."M";
+
+                print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$qual,@tags);
+                print "\n";
+                }
+            else {}
+
+    }
+    $previous_start = $start; #callback to create correct junctions
+}
 
 
-#если цепь прямая, и флаг правильный, 0, то ничего делать не надо.
-    #Если цепь обратная, то надо развернуть и перебра
+exit 0 
+
+
