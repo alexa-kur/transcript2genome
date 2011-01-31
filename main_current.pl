@@ -136,7 +136,7 @@ foreach my $line (@plus_lines){
             if ($position + $read_length - 1<= $end && $position >= $start) {
                 print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
                 print "\n";
-                }788957
+                }
             
             elsif ($position + $read_length - 1 <= $end && $position < $start) {
                 $position = $previous_end - $local_start + $pos + 1;
