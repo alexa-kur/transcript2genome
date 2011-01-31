@@ -133,12 +133,12 @@ foreach my $line (@plus_lines){
             my $read_length = length ($seq);
             
            #finding junctions and giving output 
-            if ($position + $read_length < $end && $position > $start) {
+            if ($position + $read_length - 1<= $end && $position >= $start) {
                 print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
                 print "\n";
-                }
+                }788957
             
-            elsif ($position + $read_length < $end && $position < $start) {
+            elsif ($position + $read_length - 1 <= $end && $position < $start) {
                 $position = $previous_end - $local_start + $pos + 1;
 
                 my $insert = $start - $previous_end - 1;
@@ -211,12 +211,12 @@ foreach my $line (@minus_lines){
 
             $flag = 16; 
             
-            if ($position + $read_length < $end && $position > $start) {
+            if ($position + $read_length - 1 <= $end && $position >= $start) {
                 print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$rev_qual,@tags);
                 print "\n";
                 }
             
-            elsif ($position + $read_length > $end && $position > $start) {
+            elsif ($position + $read_length - 1 > $end && $position >= $start) {
 
                 my $insert = $previous_start - $end - 1;
                 my $before_ins = $end -  $position + 1;
