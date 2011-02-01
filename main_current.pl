@@ -145,10 +145,11 @@ foreach my $line (@plus_lines){
                 my $before_ins = $previous_end - $position + 1;
                 my $after_ins = $read_length - $before_ins;
                 $cigar = $before_ins."M".$insert."N".$after_ins."M";
-
-                print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
-                print "\n";
+                if ($insert > 0){
+                    print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$seq,$qual,@tags);
+                    print "\n";
                 }
+            }
             else {}
 
 
@@ -222,10 +223,11 @@ foreach my $line (@minus_lines){
                 my $before_ins = $end -  $position + 1;
                 my $after_ins = $read_length - $before_ins;
                 $cigar = $before_ins."M".$insert."N".$after_ins."M";
-
-                print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$qual,@tags);
-                print "\n";
+                if ($insert > 0){
+                    print join "\t", ($qname,$flag,$chr,$position,$mapq,$cigar,$mrnm,$mpos,$isize,$rev_seq,$qual,@tags);
+                    print "\n";
                 }
+            }
             else {}
 
     }
