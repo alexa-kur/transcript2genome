@@ -2,6 +2,7 @@ At this moment here are three files:
 1) valid_gtf.pl
 2) main_current.pl
 3) example.sh
+4)take_fasta_from_gtf.pl
 
 
 VALID_GTF.PL
