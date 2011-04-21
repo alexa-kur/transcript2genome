@@ -41,8 +41,8 @@ my ($chr, $start,$end, $chain,$tag);
 my %tags;
 my $i;
 while (my $line = <$gtf>){
-    if ($line =~ /^chr/){
-        $line =~/^(chr\S{1,2})\s+\S+\s+\S+\s+(\d+)\s+(\d+)\s+\S+\s+([+-]).*transcript_id\s+"([^"]+)";/;
+    if ($line =~ /^[^#]/){
+        $line =~/^(\S+)\s+\S+\s+\S+\s+(\d+)\s+(\d+)\s+\S+\s+([+-]).*transcript_id\s+"([^"]+)";/;
 
 #base parameters
     $chr = $1;
