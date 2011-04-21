@@ -18,7 +18,7 @@ my $result = GetOptions("gtf=s" => \$gtf_file,
                         "ref=s"=> \$genome
                         );
 
-if ($help){print "\n[-g|--gtf] - input GTF file\n[-o|--out] - output FASTA file\n[-r|--ref] Reference genome sequence in FASTA format\n[-h|--help] - print this help\n\n";exit(0)}
+if ($help){print "\n[-g|--gtf] - input GTF file\n[-o|--out] - output FASTA file\n[-r|--ref] Reference genome sequence in FASTA format\n[-h|--help] - print this help\n[-s|--sam] samtools binary you use\n\n";exit(0)}
 open my $gtf, '<', "$gtf_file" or die "GTF File doesn't exist!";
 
 
@@ -52,7 +52,7 @@ while (my $line = <$gtf>){
     $tag = $5;
  #   print "${chr}:${start}-${end}","\n";
     $tags{"$tag"}{'chain'} = $chain if undef ($tags{"$tag"}{'chain'});
-    my @string = split ("\n",`samtools faidx $genome ${chr}:${start}-${end}`);shift @string;
+    my @string = split ("\n",`$samtools faidx $genome ${chr}:${start}-${end}`);shift @string;
    # print "${chr}:${start}-${end}";
     my $seq = join('',@string);print $seq;
     print "RefNum:",$i++,"\n";
