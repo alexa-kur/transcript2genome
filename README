@@ -12,6 +12,8 @@ for Bowtie.
 MAIN_CURRENT.PL
 Usage of main_current.pl is described in it's help. Try '-h' or '--help'.
 
+TAKE_FASTA_FROM_GTF.PL
+This script makes fasta RefSeq file from validated GTF files and genome reference
 
 NOTES
 You have to keep in mind that fact that output of 'main_current.pl' now is
