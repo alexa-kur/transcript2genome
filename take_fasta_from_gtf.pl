@@ -3,7 +3,6 @@
 use strict;
 use utf8;
 use Getopt::Long;
-use Bio::DB::Sam;
 my $bam_file = '';
 my $gtf_file = '';
 my $output_file = '';
