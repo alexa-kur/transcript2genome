@@ -41,7 +41,7 @@ my %tags;
 my $i;
 while (my $line = <$gtf>){
     if ($line =~ /^[^#]/){
-        $line =~/^(\S+)\s+\S+\s+\S+\s+(\d+)\s+(\d+)\s+\S+\s+([+-]).*transcript_id\s+"([^"]+)";/;
+        $line =~/^(\S+)\s+\S+\s+exon\s+(\d+)\s+(\d+)\s+\S+\s+([+-]).*transcript_id\s+"([^"]+)";/;
 
 #base parameters
     $chr = $1;
@@ -50,7 +50,7 @@ while (my $line = <$gtf>){
     $chain = $4;
     $tag = $5;
  #   print "${chr}:${start}-${end}","\n";
-    $tags{"$tag"}{'chain'} = $chain if undef ($tags{"$tag"}{'chain'});
+    $tags{"$tag"}{'chain'} = $chain if $tags{"$tag"}{'chain'} eq '';
     my @string = split ("\n",`$samtools faidx $genome ${chr}:${start}-${end}`);shift @string;
    # print "${chr}:${start}-${end}";
     my $seq = join('',@string);print $seq;
@@ -62,10 +62,12 @@ while (my $line = <$gtf>){
 
 open my $output, '>', $output_file;
 foreach (keys %tags){
-    if ($tags{$_}{'chain'} eq '+'){
-        print $output '>',$_,"\n",$tags{$_}{'seq'},"\n"
-    }
-    else {
-        print $output '>',$_,"\n",reverse_read($tags{$_}{'seq'}),"\n"
+    if ($_ ne ''){
+        if ($tags{$_}{'chain'} eq '+'){
+            print $output '>',$_,"\n",$tags{$_}{'seq'},"\n"
+        }
+        else {
+            print $output '>',$_,"\n",reverse_read($tags{$_}{'seq'}),"\n"
+        }
     }
 }
