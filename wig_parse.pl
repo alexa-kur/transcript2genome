@@ -38,4 +38,6 @@ while (<$wigfile>) {
     else {}
     }
 
-
+if ($step == $prev_step){
+            print "$chr\tsearch\tpeak\t$start\t$prev_step\t0.0000\t$ARGV[1]\t.\ttranscript_id \"peak_${chr}_$start\n";
+}
