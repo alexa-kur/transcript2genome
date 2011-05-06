@@ -1,8 +1,9 @@
 At this moment here are three files:
 1) valid_gtf.pl
-2) main_current.pl
+2)mRNA2genomeBAM.pl
 3) example.sh
-4)take_fasta_from_gtf.pl
+4) take_fasta_from_gtf.pl
+5) wig_parse.pl
 
 
 VALID_GTF.PL
@@ -10,11 +11,15 @@ validation of gtf is neeeded when our transcript names differin BAM and gtf.
 At now 'valid_gtf.pl' takes standard GoldenPath RefGene.txt and creates file
 for Bowtie.
 
-MAIN_CURRENT.PL
-Usage of main_current.pl is described in it's help. Try '-h' or '--help'.
+mRNA2genomeBAM.pl
+Usage of mRNA2genomeBAM.pl is described in it's help. Try '-h' or '--help'.
 
 TAKE_FASTA_FROM_GTF.PL
 This script makes fasta RefSeq file from validated GTF files and genome reference
+
+WIG_PARSE.PL
+This script parses WIG file and create GTF table that contains raws with continious
+regions. Actually, it's a very simple peakfinder
 
 NOTES
 You have to keep in mind that fact that output of 'main_current.pl' now is
