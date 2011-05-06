@@ -1,14 +1,26 @@
 #!/usr/bin/perl
-open my $wigfile, '<', "$ARGV[0]";
 my $chr="chr1";
+if ($ARGV[0] eq '--help'){
+    print "USAGE:
+./wig_parse.pl WIG_FILE [+|_]\n wig filename  must not contain spaces!!!chromosome names must be as 'chrNUM' and starts from 'chr1'\n";
+exit 0}
+my $wigfile;
+if (-f $ARGV[0]){
+open $wigfile, '<', "$ARGV[0]" or die "wig file doesn't exist!"
+}
 
+else {
+    print "no wigfile given. See '--help' for more details";
+    exit
+}
+$chr = '';
 while (<$wigfile>) {
     if (/chrom=(chr\S+)/){
-        if ($prev_step > $start){
+        if ($prev_step > $start){ 
             print "$chr\tsearch\tpeak\t$start\t$prev_step\t0.0000\t$ARGV[1]\t.\ttranscript_id \"peak_${chr}_$start\n";
-        $chr = $1;
         }
         $start = 1;
+        $chr = $1;
     }
     elsif (/^(\d+)\s+\d+$/){
         $step = $1;
