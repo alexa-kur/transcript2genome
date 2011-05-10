@@ -1,28 +1,16 @@
 At this moment here are three files:
 1) valid_gtf.pl
-2)mRNA2genomeBAM.pl
+2) mRNA2genomeBAM.pl
 3) example.sh
 4) take_fasta_from_gtf.pl
 5) wig_parse.pl
+6) correct_gtf_chains.pl
 
-
-VALID_GTF.PL
-validation of gtf is neeeded when our transcript names differin BAM and gtf.
+valid_gtf.pl
+    validation of gtf is neeeded when our transcript names differin BAM and gtf.
 At now 'valid_gtf.pl' takes standard GoldenPath RefGene.txt and creates file
 for Bowtie.
-
-mRNA2genomeBAM.pl
-Usage of mRNA2genomeBAM.pl is described in it's help. Try '-h' or '--help'.
-
-TAKE_FASTA_FROM_GTF.PL
-This script makes fasta RefSeq file from validated GTF files and genome reference
-
-WIG_PARSE.PL
-This script parses WIG file and create GTF table that contains raws with continious
-regions. Actually, it's a very simple peakfinder
-
-NOTES
-You have to keep in mind that fact that output of 'main_current.pl' now is
+    You have to keep in mind that fact that output of 'main_current.pl' now is
 in SAM format, so after it's job have be done, you need to create BAM, sort it
 and then make index file. for samtools, it will be as:
 
@@ -31,7 +19,20 @@ $ samtools sort output.bam output_sorted
 $ samtools index output_sorted.bam
 
 
-you can write script as the example.sh that is also in repo
+mRNA2genomeBAM.pl
+    Usage of mRNA2genomeBAM.pl is described in it's help. Try '-h' or '--help'.
+
+TAKE_FASTA_FROM_GTF.PL
+    This script makes fasta RefSeq file from validated GTF files and genome reference
+
+WIG_PARSE.PL
+    This script parses WIG file and create GTF table that contains raws with continious
+regions. Actually, it's a very simple peakfinder
+
+correct_gtf_chains.pl
+    Made for poor peakfinders that don't track directions of reads in peaks.
+
+NOTES
 
 DEPENDENCIES
 
@@ -40,4 +41,9 @@ libbio-perl-samtools
 perl :)
 
 
+TODO
+
+1. make correct_gtf_chains.pl to work
+2. Some tetriary analisys scripts for validate new undescribed transcripts and miRNAs
+3. statistical analisys for differential expression levels for peaks and transcripts
 
