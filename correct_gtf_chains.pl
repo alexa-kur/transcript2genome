@@ -57,19 +57,24 @@ if ($help){usage;exit 0};
 
 open my $gtf, '<', "$gtf_file" or die "No GTF File!";
 my $gtf_output;
-if (-f "${output_mask}.gtf"){die "output GTF file exists! I don't want to overwrite it\n"}
+#if (-f "${output_mask}.gtf"){die "output GTF file exists! I don't want to overwrite it\n"}
 
-else {open $gtf_output, '>', "${output_mask}.gtf"};
+#else {
+open $gtf_output, '>', "${output_mask}.gtf";
 
 
-while (my $line = <$gtf>){my @a = split $line;
+while (my $line = <$gtf>){if ($line =~/^[^#]/){
+    my @string = split ("\t+|\s+",$line) ;print $string[0];
     my %keys = ('+' => 0, '-' =>0);
-    foreach (`$samtools view $a[0]:$a[4]-$a[5]`){
+    foreach (`$samtools view $bam_file $string[0]:$string[3]-$string[4]`){
         split;
-        $_[2] == 16 ? $keys{'-'}+=1 : $keys{'+'} +=1
+        $_[1] == 16 ? $keys{'-'}+=1 : $keys{'+'} +=1;
+        $_[1] == 272 ? $keys{'-'}+=1 : $keys{'+'} +=1;
     }
     if ($keys{'-'} >= $keys{'+'}){
-        $line =~s/+/-/
+        $line =~s/\+/-/
     }
+    else {$line =~s/-/\+/}
     print $gtf_output $line
+}
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-if ($ARGV[0] eq ''){print "Usage: cat file.gtf | THIS_SCRIPT.pl > new.gtf\nAlso see README"};
+if ($ARGV[0] eq ''){print "Usage: cat file.gtf | THIS_SCRIPT.pl > new.gtf\nAlso see README";exit 0};
 while (my $line = <>){ 
     $line =~s/\"(N._\d*_)dup11\"/\"\1dup12\"/g; 
     $line =~s/\"(N._\d*_)dup10\"/\"\1dup11\"/g; 
