@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+if ($ARGV [1] =='') {print "USAGE: cat GFF.gff|perl gtf2tbl.pl > NEW.tbl\n"; die}
 $feature = '';
 while (<>){next if /^#/;
     $i++;
