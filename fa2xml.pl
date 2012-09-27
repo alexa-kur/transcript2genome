@@ -4,6 +4,9 @@ use XML::Simple;
 use Data::Dumper;
 $data = {'item'=>[]};
 open my $fasta_file,'<', "$ARGV[0]";
+if ($ARGV[0] eq ''){&Usage()};
+if ($ARGV[0] eq '-h'){&Usage()};
+if ($ARGV[0] eq '--help'){&Usage()};
 
 $i = 0;
 while (<$fasta_file>){chomp;
@@ -24,4 +27,10 @@ print XMLout($data,
     NoAttr => 1,
     KeepRoot   => 1,
     XMLDecl    => "<?xml version='1.0'?>",
-    )
+    );
+sub Usage {
+    print "USAGE:\n";
+    print "THIS_SCRIPT.pl FASTA_FILE.fa > XML_FILE.xml\n";
+    exit 0;
+    return 0;
+};
