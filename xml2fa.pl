@@ -7,7 +7,7 @@ if ($ARGV[0] eq '--help'){print "USAGE: THIS_SCRIPT.pl XML_FILE.xml > FASTA_FILE
 if ($ARGV[0] eq '-h'){print "USAGE: THIS_SCRIPT.pl XML_FILE.xml > FASTA_FILE.fa\n";exit 0}
 
 my $file = XMLin ("$ARGV[0]");
-print Dumper ($file);
+#print Dumper ($file);
 foreach (@{$$file{'item'}}) {
-#    print $$_{'fasta'}
+    print $$_{'fasta'}
     }
