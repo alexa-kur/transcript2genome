@@ -2,7 +2,7 @@
 open my $fastq, "<", "$ARGV[0]" or die "no file! give fasta file in ARGV\n";
 my $filename = $ARGV[0];
 my $csfasta_filename = $filename.".csfasta";
-my $qual_name = $filename.".qual";
+my $qual_name = $filename."_QV.qual";
 open my $csfasta, ">", "$csfasta_filename";
 open my $qual, ">","$qual_name";
 
