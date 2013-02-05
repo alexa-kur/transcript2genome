@@ -54,8 +54,8 @@ while (!eof($file)){
             if (hd($str1,$p1) <= $mismatch_num && hd($str2,$p2) <= $mismatch_num){
                 do {$flag =1;print $filename @onerecord}
             }
-            print $undefined @onerecord if $flag == 0;
         }
+            print $undefined @onerecord if $flag == 0;
 }
 
 
