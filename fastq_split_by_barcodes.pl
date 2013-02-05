@@ -1,21 +1,19 @@
 #!/usr/bin/perl
 use Getopt::Long;
 use utf8;
+usage() if scalar (@ARGV) == 0;
 
-sub usage();
-sub hd($$);
-
-my ($bc_file,$fastq,$help);
+my ($bc_file,$fastq,$help,$cut);
 my $mismatch_num = 0;
 my $out_folder = "split_fastq";
 my $result = GetOptions ("bc_file=s" => \$bc_file,
                          "fastq=s" =>   \$fastq,
                          "help" => \$help,
+                         "cut" => \$cut,
                          "mismatch_num=i" => \$mismatch_num,
                          "out_folder=s" => \$out_folder,
                          );
 usage() if $help;
-usage() if (scalar @ARGV == 0);
 
 if (-d $out_folder){
     die "output folder exists!"
@@ -52,9 +50,14 @@ while (!eof($file)){
             my $str1 = substr($onerecord[5], 0, length($p1));
             my $str2 = substr($onerecord[1],0, length($p2));
             if (hd($str1,$p1) <= $mismatch_num && hd($str2,$p2) <= $mismatch_num){
-                do {$flag =1;print $filename @onerecord}
+                $flag =1;
+                if ($cut) {
+                    $onerecord[5] =~ s/^\w{12}//;
+                    $onerecord[1] =~ s/^\w{12}//;
+                }
+                print $filename @onerecord}
             }
-        }
+        
             print $undefined @onerecord if $flag == 0;
 }
 
@@ -73,7 +76,7 @@ sub hd  {
 sub usage(){
 print<<EOF;
 Barcode splitter for fastq files based on barcode matching.
-usage: $0 --bc_file FILE --fastq FILE [--help] [--out_folder FOLDER] [--mismatch_num N]
+usage: $0 --bc_file FILE --fastq FILE [--help] [--out_folder FOLDER] [--mismatch_num N] [--cut]
 
 Arguments:
 
@@ -83,6 +86,7 @@ Arguments:
 --help          - Print help
 --out_folder    - Folder that contains splitted fastq files. Must not exist.
                   default value is 'split_fastq'
+--cut		    - cut adapters from sequences
 
 Example:
 $0 --bc_file barcode.txt --fastq data.fastq --mismatch_num 1 --out_folder Newsplit
