@@ -1,6 +1,10 @@
 #!/usr/bin/perl
 use Getopt::Long;
 use utf8;
+
+sub usage();
+sub hd($$);
+
 my ($bc_file,$fastq,$help);
 my $mismatch_num = 0;
 my $out_folder = "split_fastq";
@@ -10,6 +14,9 @@ my $result = GetOptions ("bc_file=s" => \$bc_file,
                          "mismatch_num=i" => \$mismatch_num,
                          "out_folder=s" => \$out_folder,
                          );
+usage() if $help;
+usage() if (scalar @ARGV == 0);
+
 if (-d $out_folder){
     die "output folder exists!"
 }
@@ -22,7 +29,9 @@ open my $barcodes_file ,"<","$bc_file";
 chomp(@codes);
 %data_hash;
 foreach (@codes){my @data_string = split "\t";
+    if  (/^[^#]/){
     $data_hash{"$data_string[2]"} = [$data_string[0],$data_string[1],] if $data_string[2] ne '';
+    }
 }
 foreach( keys(%data_hash)){
     open $data_hash{$_}[2],">","$out_folder/$_.fastq" 
@@ -61,3 +70,27 @@ sub hd  {
     }
     return $mismatch_num
 }
+sub usage(){
+print<<EOF;
+Barcode splitter for fastq files based on barcode matching.
+usage: $0 --bc_file FILE --fastq FILE [--help] [--out_folder FOLDER] [--mismatch_num N]
+
+Arguments:
+
+--bc_file FILE  - Barcodes file name (see explanation below)
+--fastq FILE    - Fastq file
+--mismatch_num  - Number of mismatches allowed in barcode. Default is 0 
+--help          - Print help
+--out_folder    - Folder that contains splitted fastq files. Must not exist.
+                  default value is 'split_fastq'
+
+Example:
+$0 --bc_file barcode.txt --fastq data.fastq --mismatch_num 1 --out_folder Newsplit
+
+Barcode file format
+-------------------
+#This is comment line. It is skipped in parsing
+barcode1	barcode2	library_name
+
+
+
