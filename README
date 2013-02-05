@@ -32,6 +32,7 @@ regions. Actually, it's a very simple peakfinder
 correct_gtf_chains.pl
     Made for poor peakfinders that don't track directions of reads in peaks.
 
+some other scripts
 NOTES
 
 DEPENDENCIES
