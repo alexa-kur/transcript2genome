@@ -90,7 +90,9 @@ $0 --bc_file barcode.txt --fastq data.fastq --mismatch_num 1 --out_folder Newspl
 Barcode file format
 -------------------
 #This is comment line. It is skipped in parsing
-barcode1	barcode2	library_name
-
+barcode_R2	barcode_R1	library_name
+EOF
+exit 1;
+}
 
 
