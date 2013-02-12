@@ -54,6 +54,8 @@ while (!eof($file)){
                 if ($cut) {
                     $onerecord[5] =~ s/^\w{12}//;
                     $onerecord[1] =~ s/^\w{12}//;
+                    $onerecord[7] =~ s/^\w{12}//;
+                    $onerecord[3] =~ s/^\w{12}//;
                 }
                 print $filename @onerecord}
             }
