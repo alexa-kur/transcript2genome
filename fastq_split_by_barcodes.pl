@@ -52,10 +52,10 @@ while (!eof($file)){
             if (hd($str1,$p1) <= $mismatch_num && hd($str2,$p2) <= $mismatch_num){
                 $flag =1;
                 if ($cut) {
-                    $onerecord[5] =~ s/^\w{12}//;
-                    $onerecord[1] =~ s/^\w{12}//;
-                    $onerecord[7] =~ s/^\w{12}//;
-                    $onerecord[3] =~ s/^\w{12}//;
+                    $onerecord[5] =~ s/^.{12}//;
+                    $onerecord[1] =~ s/^.{12}//;
+                    $onerecord[7] =~ s/^.{12}//;
+                    $onerecord[3] =~ s/^.{12}//;
                 }
                 print $filename @onerecord}
             }
