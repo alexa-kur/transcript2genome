@@ -48,7 +48,8 @@ while (my $line = <$gtf>){
     $start = $2;
     $end = $3;
     $chain = $4;
-    $tag = $start."-".$end.".".$chain;
+    $tag = $5;
+    #$tag = $start."-".$end.".".$chain;
   #  print "${chr}:${start}-${end}","\n";
     $tags{"$tag"}{'chain'} = $chain if $tags{"$tag"}{'chain'} eq '';
     my @string = split ("\n",`$samtools faidx $genome ${chr}:${start}-${end}`);shift @string;
