@@ -9,15 +9,17 @@ my $output_file = '';
 my $samtools = "samtools";
 my $genome= '';
 my $help = '';
+my $exons = '';
 
 my $result = GetOptions("gtf=s" => \$gtf_file,
                         "out=s" => \$output_file,
                         "sam=s" => \$samtools,
                         "help" => \$help,
-                        "ref=s"=> \$genome
+                        "ref=s"=> \$genome,
+                        "exons" => \$exons
                         );
 
-if ($help){print "\n[-g|--gtf] - input GTF file\n[-o|--out] - output FASTA file\n[-r|--ref] Reference genome sequence in FASTA format\n[-h|--help] - print this help\n[-s|--sam] samtools binary you use\n\n";exit(0)}
+if ($help){print "\n[-g|--gtf] - input GTF file\n[-o|--out] - output FASTA file\n[-r|--ref] Reference genome sequence in FASTA format\n[-h|--help] - print this help\n[-s|--sam] samtools binary you use\n[-e|--exons] if you want to take exon sequences, not full transcripts\n\n";exit(0)}
 open my $gtf, '<', "$gtf_file" or die "GTF File doesn't exist!";
 
 
@@ -48,8 +50,10 @@ while (my $line = <$gtf>){
     $start = $2;
     $end = $3;
     $chain = $4;
+    if ($exons){$tag = $start."-".$end.".".$chain}
+    else {
     $tag = $5;
-    #$tag = $start."-".$end.".".$chain;
+    }
   #  print "${chr}:${start}-${end}","\n";
     $tags{"$tag"}{'chain'} = $chain if $tags{"$tag"}{'chain'} eq '';
     my @string = split ("\n",`$samtools faidx $genome ${chr}:${start}-${end}`);shift @string;
