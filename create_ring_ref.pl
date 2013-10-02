@@ -9,15 +9,17 @@ my $output_file = '';
 my $samtools = "samtools";
 my $genome= '';
 my $help = '';
+my $taglen = 30;
 
 my $result = GetOptions("gtf=s" => \$gtf_file,
                         "out=s" => \$output_file,
                         "sam=s" => \$samtools,
                         "help" => \$help,
-                        "ref=s"=> \$genome
+                        "ref=s"=> \$genome,
+                        "taglen=i"=>\$taglen,
                         );
 
-if ($help){print "\n[-g|--gtf] - input GTF file\n[-o|--out] - output FASTA file\n[-r|--ref] Reference genome sequence in FASTA format\n[-h|--help] - print this help\n[-s|--sam] samtools binary you use\n\n";exit(0)}
+if ($help){print "\n[-g|--gtf] - input GTF file\n[-o|--out] - output FASTA file\n[-r|--ref] Reference genome sequence in FASTA format\n[-h|--help] - print this help\n[-s|--sam] samtools binary you use\n[-t|--taglen] integer parameter that describes tag length (default = 30)\n\n";exit(0)}
 open my $gtf, '<', "$gtf_file" or die "GTF File doesn't exist!";
 
 
@@ -75,9 +77,9 @@ foreach my $id (@transcript_ids){
 
     if ($tags{$id}{'chain'} eq '+'){
         for (my $i =$exon_number ; $i > 0;$i--){
-            my $start = substr $tags{$id}{$i}, -30;
+            my $start = substr $tags{$id}{$i}, -$taglen;
             for (my $j = $i -1; $j>0;$j--){
-                my $end = substr $tags{$id}{$j},0,30;
+                my $end = substr $tags{$id}{$j},0,$taglen;
                 print $output ">$id"."_exon"."$i"."_exon"."$j\n";
                 print $output $start.$end."\n";
             }
@@ -85,10 +87,10 @@ foreach my $id (@transcript_ids){
     }
     elsif ($tags{$id}{'chain'} eq '-'){
         for (my $i =1 ; $i < $exon_number;$i++){
-            my $start = reverse_read(substr $tags{$id}{$i}, 0,30);
+            my $start = reverse_read(substr $tags{$id}{$i}, 0,$taglen);
             my $number_start = $exon_number -$i+1;
             for (my $j = $i+1;$j<$exon_number;$j++){
-                my $end =reverse_read(substr $tags{$id}{$j},-30);
+                my $end =reverse_read(substr $tags{$id}{$j},-$taglen);
                 my $number_end = $exon_number - $j + 1;
                 print $output ">$id"."_exon"."$number_start"."_exon"."$number_end\n";
                 print $output $start.$end."\n";
