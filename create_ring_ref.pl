@@ -76,9 +76,9 @@ foreach my $id (@transcript_ids){
     
 
     if ($tags{$id}{'chain'} eq '+'){
-        for (my $i =$exon_number ; $i > 0;$i--){
+        for (my $i =$exon_number ; $i > 0;$i--){#>/>=
             my $start = substr $tags{$id}{$i}, -$taglen;
-            for (my $j = $i -1; $j>0;$j--){
+            for (my $j = $i ; $j>0;$j--){
                 my $end = substr $tags{$id}{$j},0,$taglen;
                 print $output ">$id"."_exon"."$i"."_exon"."$j\n";
                 print $output $start.$end."\n";
@@ -86,10 +86,10 @@ foreach my $id (@transcript_ids){
         }
     }
     elsif ($tags{$id}{'chain'} eq '-'){
-        for (my $i =1 ; $i < $exon_number;$i++){
+        for (my $i =1 ; $i <= $exon_number;$i++){ #1/0
             my $start = reverse_read(substr $tags{$id}{$i}, 0,$taglen);
             my $number_start = $exon_number -$i+1;
-            for (my $j = $i+1;$j<$exon_number;$j++){
+            for (my $j = $i;$j<=$exon_number;$j++){
                 my $end =reverse_read(substr $tags{$id}{$j},-$taglen);
                 my $number_end = $exon_number - $j + 1;
                 print $output ">$id"."_exon"."$number_start"."_exon"."$number_end\n";
